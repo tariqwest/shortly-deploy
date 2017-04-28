@@ -21,22 +21,59 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
+      },
+      build: {
+        files: {
+          'public/dist/client/app.min.js': 'public/client/app.js',
+          'public/dist/client/link.min.js': 'public/client/link.js',
+          'public/dist/client/links.min.js': 'public/client/links.js',
+          'public/dist/client/router.min.js': 'public/client/router.js',
+          'public/dist/client/linkView.min.js': 'public/client/linkView.js',
+          'public/dist/client/linksView.min.js': 'public/client/linksView.js',
+          'public/dist/client/createLinkView.min.js': 'public/client/createLinkView.js',
+          'public/dist/lib/backbone.min.js': 'public/lib/backbone.js',
+          'public/dist/lib/underscore.min.js': 'public/lib/underscore.js',
+          'public/dist/lib/jquery.min.js': 'public/lib/jquery.js',
+          'public/dist/lib/handlebars.min.js': 'public/lib/handlebars.js'
+        }
+      }
+    },
+
+    concat: {
+      options: {
+        separator: ';\n',
+      },
+      dist: {
+        src: ['public/dist/client/*.js', '!*/built.js'],
+        dest: 'public/dist/client/built.js'
+      },
     },
 
     eslint: {
       target: [
         // Add list of files to lint here
+        'public/client/**/*.js',
+        'public/lib/**/*.js',
+        '*.js',
+        //'*.json'
       ]
     },
 
     cssmin: {
+      target: {
+        files: {
+          'public/dist/style.min.css': 'public/style.css'
+        }
+      }
     },
 
     watch: {
       scripts: {
         files: [
           'public/client/**/*.js',
-          'public/lib/**/*.js',
+          'public/lib/**/*.js'
         ],
         tasks: [
           'concat',
@@ -77,6 +114,10 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'eslint',
+    'uglify',
+    'cssmin',
+    'concat'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -91,5 +132,8 @@ module.exports = function(grunt) {
     // add your deploy tasks here
   ]);
 
+  grunt.registerTask('default', [
+    // add your default tasks here
+  ]);
 
 };
